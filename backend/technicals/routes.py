@@ -7,7 +7,6 @@ technicals_router = APIRouter()
 
 @technicals_router.post("/get_commodities_technical_rates")
 async def get_commodities_technical_rates(
-    background_tasks: BackgroundTasks,
     RSI_PERIOD: int = Query(14, description="Relative Strength Index period"),
     TIMESERIES: str = Query('daily', description="Time series interval")
 ):
@@ -23,7 +22,6 @@ async def get_commodities_technical_rates(
 
 @technicals_router.post("/get_forex_technical_rates")
 async def get_forex_technical_rates(
-    background_tasks: BackgroundTasks,
     RSI_PERIOD: int = Query(14, description="Relative Strength Index period"),
     TIMESERIES: str = Query('daily', description="Time series interval")
 ):
