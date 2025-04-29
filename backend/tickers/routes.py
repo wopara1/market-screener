@@ -36,6 +36,7 @@ def get_forex_list():
     except Exception as e:
         fmp_bridge.handle_fmp_error(e)
 
+# route is really expensive due to amount of data
 @ticker_router.get("/cryptocurrencies-list")
 def get_cryptocurrencies_list():
     """Fetches the list of available cryptocurrencies."""

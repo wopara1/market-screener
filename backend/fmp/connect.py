@@ -368,7 +368,7 @@ class FMPDataBridge:
         except Exception as e:
             print(f"Error fetching technical indicators for {symbol}: {e}")
             return pd.DataFrame()
-
+        
     def get_cot_list(self):
         """
         Query FMP /cot list/ API.
