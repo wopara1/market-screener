@@ -54,9 +54,6 @@ async def fetch_indicators(symbol, period, time_series, semaphore):
 
         total_score = rsi_score + adx_score + willr_score
         return symbol, {
-            "rsi":   rsi_score,
-            "adx":   adx_score,
-            "willr": willr_score,
             "score": total_score,
             "rating": classify_score(total_score)
         }
