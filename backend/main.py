@@ -7,6 +7,7 @@ from tickers import initialize_tickers, fetch_cot_list
 import uvicorn
 import logging
 from tickers.routes import ticker_router
+from technicals.routes import technicals_router
 
 # Config logging
 logging.basicConfig(level=logging.DEBUG)
@@ -37,6 +38,7 @@ async def on_startup():
 
 # --- API Routes Inclusion ---
 app.include_router(ticker_router, prefix='/tickers')
+app.include_router(technicals_router, prefix='/technicals')
 
 # --- Health Check and Root Endpoints ---
 @app.get("/ping")
