@@ -1,17 +1,31 @@
-from fastapi import FastAPI
+import json
+import logging
+import asyncio
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from settings.config import settings
 from starlette.middleware.sessions import SessionMiddleware
 from starlette.middleware.cors import CORSMiddleware
-import asyncio
 from tickers import initialize_tickers, fetch_cot_list
-import uvicorn
-import logging
 from tickers.routes import ticker_router
 from technicals.routes import technicals_router
+from wsocket.manager import WebSocketManager
+from wsocket.listener import FMPListener
+from wsocket.subsciber import SubscriptionManager
+
+# Initialize components
+subscription_manager = SubscriptionManager()
+websocket_manager = WebSocketManager(subscription_manager)
+
+# Exchanges to support
+EXCHANGES = ["company", "crypto", "forex"]
 
 # Config logging
-logging.basicConfig(level=logging.DEBUG)
-    
+logger = logging.getLogger()
+logger.setLevel(logging.DEBUG)
+handler = logging.StreamHandler()
+handler.setFormatter(logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s"))
+logger.addHandler(handler)
+
 # --- FastAPI Application Initialization ---
 app = FastAPI(title="Market-Sceener")
 
@@ -45,5 +59,26 @@ app.include_router(technicals_router, prefix='/technicals')
 async def health_check():
     return {"message": "pong"} 
 
-if __name__ == "__main__":
-    uvicorn.run("main:app", reload=True, log_level="debug")
+## -- Websocket --
+@app.on_event("startup")
+async def startup():
+    for exchange in EXCHANGES:
+        listener = FMPListener(
+            exchange=exchange,
+            subscription_manager=subscription_manager,
+            websocket_manager=websocket_manager
+        )
+        asyncio.create_task(listener.start())
+
+@app.websocket("/ws")
+async def market_ws(websocket: WebSocket):
+    await websocket_manager.connect(websocket)
+    try:
+        while True:
+            data = await websocket.receive_json()
+            await websocket_manager.receive_event(websocket, data)
+    except WebSocketDisconnect:
+        websocket_manager.disconnect(websocket)
+    except Exception as e:
+        websocket_manager.disconnect(websocket)
+        print(f"WebSocket error: {e}")
