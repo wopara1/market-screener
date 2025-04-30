@@ -56,3 +56,23 @@ example list data:
         "score": 3,
         "rating": "Strong Buy"
     },
+
+
+Websocket functionality:
+connection string:
+ws://127.0.0.1:8000/ws
+
+message format:
+{"event":"subscribe",
+"payload":{"exchange":"crypto","filters":{"ticker":["BTCUSD"]}}}
+
+current supported events
+subscribe, update_subscription, unsubscribe
+
+current supported exchanges:
+forex, crypto, company(stocks)
+
+filters **please ensure to implement ticker checking just incase as you will have the list of tickers**
+
+example data point:
+{"event":"update","payload":{"ticker":"btcusd","timestamp":1745985,"type":"Q","exchange":"crypto","ask_price":95054.32,"ask_size":0.0001052,"bid_price":95046.67,"bid_size":5.184e-05,"last_price":null,"last_size":null}}

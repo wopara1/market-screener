@@ -4,6 +4,7 @@ import { BiSearch } from "react-icons/bi";
 import { VscSettings } from "react-icons/vsc";
 import { useState } from "react";
 import { GrMoreVertical } from "react-icons/gr";
+import  WebSocketComponent from "./wsocket/client";
 
 function App() {
   return (
@@ -63,6 +64,7 @@ function App() {
           </tbody>
         </table>
       </div>
+      <WebSocketComponent/>
     </>
   );
 }
