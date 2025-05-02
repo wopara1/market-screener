@@ -23,7 +23,10 @@ const WebSocketComponent: React.FC = () => {
   }, []);
 
   const sendMessage = () => {
-    wsManager.sendMessage("message", { text: "Hello, server!" });
+    wsManager.sendMessage("subscribe", {
+      exchange: "crypto",
+      filters: { ticker: ["BTCUSD"] },
+    });
   };
 
   return (
